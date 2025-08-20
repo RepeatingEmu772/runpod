@@ -3,7 +3,7 @@ import os
 import runpod
 import time
 import torch
-from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
+from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig, pipeline
 
 def fetch_token():
     token = os.getenv("HF_TOKEN")
