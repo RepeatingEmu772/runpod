@@ -10,4 +10,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY src/handler.py .
 
 # Start the container
-CMD ["python", "-u", "/handler.py"]
+CMD ["python", "-u", "/handler.py stg"]

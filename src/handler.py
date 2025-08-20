@@ -4,11 +4,15 @@ import time
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
 
-model = None 
-tokenizer = None
-
-def load_models():
+def load_models(env):
     # Load model and tokenizer outside the handler
+    global model, tokenizer
+
+    if env == 'local':
+        model = None
+        tokenizer = None
+        return 
+
     model_name = "mistralai/Mistral-7B-v0.1"
     
     bnb_config = BitsAndBytesConfig(
@@ -24,7 +28,7 @@ def load_models():
         quantization_config=bnb_config,
         torch_dtype=torch.bfloat16,
     )
-
+    
     # # Move model to GPU if available
     # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     # model.to(device)
@@ -72,7 +76,11 @@ def handler(job):
     return sequences[0]['generated_text']
 
 if __name__ == '__main__':
-    env = "stg" if (len(sys.argv) < 1) else "local"
-    load_models() if env != 'local' else print("local testing. skipping loading models...") 
+    if len(sys.argv) < 2:
+        print("Incorrect usage\nSample usage: python handler.py <env>")
+    
+    env = sys.argv[1]
+    print(f"env: {env}")
+    load_models(env) 
 
     runpod.serverless.start({'handler': handler })
