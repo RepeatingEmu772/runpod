@@ -20,6 +20,7 @@ def load_models(env):
         tokenizer = None
         return 
 
+    token = fetch_token()
     model_name = "mistralai/Mistral-7B-v0.1"
     
     bnb_config = BitsAndBytesConfig(
@@ -30,7 +31,7 @@ def load_models(env):
     
     tokenizer = AutoTokenizer.from_pretrained(
         model_name,
-        token=fetch_token()
+        token=token
         )
 
     model = AutoModelForCausalLM.from_pretrained(
@@ -38,7 +39,7 @@ def load_models(env):
         device_map="auto", 
         quantization_config=bnb_config,
         torch_dtype=torch.bfloat16,
-        token=fetch_token()
+        token=token
         )
     
     # # Move model to GPU if available
