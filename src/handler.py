@@ -44,8 +44,9 @@ def handler(job):
 
     print(f"Received prompt: {prompt}")
     
-    if model is not None print(f"found model")
-    if tokenizer is not None print(f"found tokenizer")
+    if model is None or tokenizer is None:
+        print("Model/Tokenizer not found. Skipping exiting..")
+        return "not proccessed"
 
     pipe = pipeline(
         "text-generation", 
@@ -66,7 +67,7 @@ def handler(job):
         top_p=0.95,
         num_return_sequences=1,
     )
-    print("Prompt finished processing "sequences[0]['generated_text'])
+    print("Prompt finished processing ", sequences[0]['generated_text'])
     
     return sequences[0]['generated_text']
 
