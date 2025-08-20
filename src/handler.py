@@ -4,6 +4,12 @@ import time
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig
 
+def fetch_token():
+    token = os.getenv("HF_TOKEN")
+    if not token:
+        raise ValueError("HF_TOKEN environment variable not set.")
+    return token
+
 def load_models(env):
     # Load model and tokenizer outside the handler
     global model, tokenizer
@@ -19,15 +25,20 @@ def load_models(env):
         load_in_4bit=True,
         bnb_4bit_quant_type="nf4",
         bnb_4bit_use_double_quant=True,
-    )
+        )
     
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    tokenizer = AutoTokenizer.from_pretrained(
+        model_name,
+        token=fetch_token()
+        )
+
     model = AutoModelForCausalLM.from_pretrained(
         model_name, 
         device_map="auto", 
         quantization_config=bnb_config,
         torch_dtype=torch.bfloat16,
-    )
+        token=fetch_token()
+        )
     
     # # Move model to GPU if available
     # device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -58,7 +69,7 @@ def handler(job):
         tokenizer = tokenizer, 
         torch_dtype=torch.bfloat16, 
         device_map="auto"
-    )
+        )
 
     print("Prompt started processing")
 
@@ -70,7 +81,7 @@ def handler(job):
         top_k=50, 
         top_p=0.95,
         num_return_sequences=1,
-    )
+        )
     print("Prompt finished processing ", sequences[0]['generated_text'])
     
     return sequences[0]['generated_text']
