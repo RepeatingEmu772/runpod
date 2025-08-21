@@ -1,13 +1,15 @@
 FROM python:3.11-slim
 
-WORKDIR /
+WORKDIR /app
 
-# Copy and install requirements
-COPY builder/requirements.txt .
-RUN pip install --no-cache-dir -r requirements.txt
+# Copy pyproject.toml
+COPY pyproject.toml .
 
-# Copy your handler code
-COPY src/handler.py .
+# Copy source code
+COPY src/ ./src/
+
+# Install the package
+RUN pip install --no-cache-dir -e .
 
 # Start the container
-CMD ["python", "-u", "/handler.py", "stg"]
+CMD ["python", "-u", "-m", "runpod_mistral", "stg"]

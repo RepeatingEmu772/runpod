@@ -1,0 +1,101 @@
+Metadata-Version: 2.4
+Name: runpod-mistral
+Version: 0.1.0
+Summary: RunPod serverless worker for Mistral-7B model
+Author-email: RepeatingEmu772 <your.email@example.com>
+License: MIT
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+Requires-Dist: runpod~=1.7.13
+Requires-Dist: torch==2.8.0
+Requires-Dist: transformers==4.55.2
+Requires-Dist: accelerate>=0.33
+Requires-Dist: bitsandbytes==0.47.0
+Requires-Dist: peft>=0.11
+Provides-Extra: dev
+Requires-Dist: pytest>=7.0.0; extra == "dev"
+Requires-Dist: black>=23.0.0; extra == "dev"
+Requires-Dist: isort>=5.10.0; extra == "dev"
+
+# RunPod Mistral Worker
+
+A serverless worker for running the Mistral-7B language model on RunPod.
+
+## Project Structure
+
+The project has been organized using a modern Python package structure with `pyproject.toml`:
+
+```
+runpod/
+├── pyproject.toml          # Project metadata and dependencies
+├── Dockerfile              # Container configuration
+├── Makefile                # Build and run commands
+├── src/                    # Source code
+│   └── runpod_mistral/     # Package directory
+│       ├── __init__.py     # Package initialization
+│       ├── __main__.py     # Entry point
+│       └── handler.py      # RunPod handler implementation
+└── test_input.json         # Example input for testing
+```
+
+## Development
+
+### Setup
+
+1. Create a virtual environment and install dependencies:
+
+```bash
+make
+```
+
+2. Set your Hugging Face token as an environment variable:
+
+```bash
+export HF_TOKEN=your_hugging_face_token
+```
+
+### Running Locally
+
+```bash
+make run-local
+```
+
+### Running in Staging Mode
+
+```bash
+make run-stg
+```
+
+### Code Formatting
+
+```bash
+make format
+```
+
+### Running Tests
+
+```bash
+make test
+```
+
+## Building and Deploying
+
+Build the Docker image:
+
+```bash
+docker build -t runpod-mistral:latest .
+```
+
+Push to your container registry:
+
+```bash
+docker tag runpod-mistral:latest your-registry/runpod-mistral:latest
+docker push your-registry/runpod-mistral:latest
+```
+
+## License
+
+MIT

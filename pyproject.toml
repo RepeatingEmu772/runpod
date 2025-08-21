@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "runpod-mistral"
+version = "0.1.0"
+description = "RunPod serverless worker for Mistral-7B model"
+authors = [
+    {name = "RepeatingEmu772", email = "your.email@example.com"}
+]
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "runpod~=1.7.13",
+    "torch==2.8.0",
+    "transformers==4.55.2",
+    "accelerate>=0.33",
+    "bitsandbytes==0.47.0",
+    "peft>=0.11",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+    "black>=23.0.0",
+    "isort>=5.10.0",
+]
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+packages = ["runpod_mistral"]
+
+[tool.black]
+line-length = 88
+target-version = ["py38"]
+
+[tool.isort]
+profile = "black"
+line_length = 88
