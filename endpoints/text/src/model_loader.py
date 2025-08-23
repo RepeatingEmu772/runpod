@@ -21,10 +21,28 @@ def load_models(env):
     global model, tokenizer, pipe
 
     if env == 'local':
-        model = None
-        tokenizer = None
-        pipe = None
-        return
+        # For local development we provide a lightweight, CPU-friendly fallback
+        # so the handler can run without requiring the full Mistral model or GPU.
+        try:
+            from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
+
+            small_model_name = "distilgpt2"
+            tokenizer = AutoTokenizer.from_pretrained(small_model_name)
+            model = AutoModelForCausalLM.from_pretrained(small_model_name, device_map="cpu")
+            pipe = pipeline(
+                "text-generation",
+                model=model,
+                tokenizer=tokenizer,
+                device_map="cpu",
+            )
+            return
+        except Exception:
+            # If the small model can't be loaded (no network), fall back to None so
+            # the handler will report an informative error.
+            model = None
+            tokenizer = None
+            pipe = None
+            return
 
     token = fetch_token()
     model_name = "mistralai/Mistral-7B-Instruct-v0.3"

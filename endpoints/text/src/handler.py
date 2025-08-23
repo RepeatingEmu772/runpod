@@ -1,5 +1,5 @@
 import torch
-from model_loader import pipe, tokenizer
+import model_loader
 
 
 def handler(job):
@@ -11,7 +11,7 @@ def handler(job):
             "error": "Input is missing the 'prompt' key. Please include a prompt."
         }
 
-    if pipe is None or tokenizer is None:
+    if model_loader.pipe is None or model_loader.tokenizer is None:
         print("Pipeline/Tokenizer not loaded. Exiting.")
         return {"error": "Model pipeline not loaded."}
 
@@ -36,7 +36,7 @@ def handler(job):
     print(f"Received prompt: {prompt}")
     print("Prompt started processing")
 
-    sequences = pipe(
+    sequences = model_loader.pipe(
         prompt,
         do_sample=do_sample,
         max_new_tokens=max_new_tokens,
@@ -46,9 +46,9 @@ def handler(job):
         num_return_sequences=num_return_sequences,
         repetition_penalty=repetition_penalty,
         return_full_text=False,
-        pad_token_id=tokenizer.eos_token_id,
-        eos_token_id=tokenizer.eos_token_id,
-        generator=generator,
+    pad_token_id=model_loader.tokenizer.eos_token_id,
+    eos_token_id=model_loader.tokenizer.eos_token_id,
+    generator=generator,
     )
 
     # Use the first sequence
@@ -56,8 +56,8 @@ def handler(job):
 
     # Token counts for basic observability
     try:
-        tokens_generated = len(tokenizer.encode(text))
-        prompt_tokens = len(tokenizer.encode(prompt))
+        tokens_generated = len(model_loader.tokenizer.encode(text))
+        prompt_tokens = len(model_loader.tokenizer.encode(prompt))
     except Exception:
         tokens_generated = None
         prompt_tokens = None
