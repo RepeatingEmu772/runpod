@@ -137,7 +137,3 @@ Lint all endpoint code:
 ```bash
 make lint
 ```
-
-## License
-
-MIT
