@@ -8,7 +8,7 @@ def handler(job):
     job_input = job.get("input", {})
     if not job_input.get("prompt"):
         return {
-            "error": "Input is missing the 'prompt' key. Please include a prompt.")
+            "error": "Input is missing the 'prompt' key. Please include a prompt."
         }
 
     if pipe is None or tokenizer is None:
