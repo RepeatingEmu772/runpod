@@ -5,13 +5,15 @@ VENV := venv
 ENDPOINTS_DIR := endpoints
 TEXT_ENDPOINT := $(ENDPOINTS_DIR)/text
 IMAGE_ENDPOINT := $(ENDPOINTS_DIR)/image
-REQ := builder/requirements.txt
+TEXT_REQ := $(TEXT_ENDPOINT)/builder/requirements.txt
+IMAGE_REQ := $(IMAGE_ENDPOINT)/src/builder/requirements.txt
 
-# Create virtual environment
-$(VENV)/bin/activate: $(REQ)
+# Create virtual environment for text endpoint
+$(VENV)/bin/activate: $(TEXT_REQ)
 	$(PYTHON) -m venv $(VENV)
 	. $(VENV)/bin/activate; $(PIP) install --upgrade pip
-	. $(VENV)/bin/activate; $(PIP) install -r $(REQ) 
+	. $(VENV)/bin/activate; $(PIP) install -r $(TEXT_REQ)
+	. $(VENV)/bin/activate; $(PIP) install -r $(IMAGE_REQ) 
 
 # Run the text endpoint locally
 run-text-local: $(VENV)/bin/activate
