@@ -1,10 +1,6 @@
-import sys
-import os
-import runpod
-import time
 import torch
-from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig, pipeline
-    
+from transformers import pipeline
+from model_loader import model, tokenizer
 
 def handler(job):
     print("Worker Start")
@@ -23,15 +19,15 @@ def handler(job):
     
     if model is None or tokenizer is None:
         print("Model/Tokenizer not found. Skipping exiting..")
-        return "not proccessed"
+        return "not processed"
 
     pipe = pipeline(
         "text-generation", 
         model=model, 
-        tokenizer = tokenizer, 
+        tokenizer=tokenizer, 
         torch_dtype=torch.bfloat16, 
         device_map="auto"
-        )
+    )
 
     print("Prompt started processing")
 
@@ -43,7 +39,7 @@ def handler(job):
         top_k=50, 
         top_p=0.95,
         num_return_sequences=1,
-        )
+    )
     print("Prompt finished processing ", sequences[0]['generated_text'])
     
     return sequences[0]['generated_text']
