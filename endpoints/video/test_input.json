@@ -1,0 +1,10 @@
+{
+  "prompt": "A short cinematic clip of a sunrise over mountains",
+  "width": 640,
+  "height": 360,
+  "fps": 15,
+  "duration": 3,
+  "num_inference_steps": 12,
+  "guidance_scale": 3.5,
+  "seed": 12345
+}
