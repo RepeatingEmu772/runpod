@@ -11,12 +11,6 @@ def _fetch_token():
     return token
 
 def load_models(env: str):
-    """
-    Load a WAN-2.2 video pipeline. On 'local' we skip loading so local dev doesn't
-    need GPU or large downloads. If the environment lacks the required classes
-    the module-level `pipe_video` will remain None and handlers will return an
-    informative error.
-    """
     global pipe_video
 
     if env == "local":
@@ -29,17 +23,12 @@ def load_models(env: str):
         pipe_video = None
         return
 
-    # Replace this with the real model id for WAN 2.2 if different
-    MODEL_ID = "wan/wan2.2"
+    MODEL_ID = "Wan-AI/Wan2.2-TI2V-5B"
 
     # Choose dtype based on CUDA availability
     dtype = torch.float16 if torch.cuda.is_available() else torch.float32
 
     try:
-        # Try to load a generic video-capable pipeline from diffusers.
-        # Note: concrete class names and APIs differ between implementations;
-        # this is a best-effort loader that will silently degrade to None if
-        # the exact class isn't present in the environment.
         from diffusers import VideoPipeline
 
         pipe = VideoPipeline.from_pretrained(
@@ -58,5 +47,4 @@ def load_models(env: str):
 
         pipe_video = pipe
     except Exception:
-        # If we cannot import or construct a pipeline, leave pipe_video as None.
         pipe_video = None
