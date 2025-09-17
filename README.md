@@ -29,10 +29,10 @@ runpod/
 ## Available Endpoints
 
 ### Text Generation (`endpoints/text/`)
-Uses Mistral-7B model for text generation with 4-bit quantization.
+Mistral-7B 4-bit quantization
 
 ### Image Processing (`endpoints/image/`)
-Template for image processing tasks.
+Flux.1-dev
 
 ## Development
 
@@ -41,11 +41,6 @@ Template for image processing tasks.
 1. Create a virtual environment and install dependencies:
 ```bash
 make
-```
-
-2. Set your Hugging Face token (for text endpoint):
-```bash
-export HF_TOKEN=your_hugging_face_token
 ```
 
 ### Running Endpoints Locally
@@ -101,39 +96,4 @@ docker build --build-arg ENDPOINT=text -t runpod-text:latest .
 **Image endpoint:**
 ```bash
 docker build --build-arg ENDPOINT=image -t runpod-image:latest .
-```
-
-### Deploy to RunPod
-
-1. Push your image to a container registry:
-```bash
-docker tag runpod-text:latest your-registry/runpod-text:latest
-docker push your-registry/runpod-text:latest
-```
-
-2. Create a new endpoint on RunPod using your image URL.
-
-## Adding New Endpoints
-
-1. Create a new directory under `endpoints/`
-2. Follow the same structure as existing endpoints:
-   - `src/main.py` - Entry point
-   - `src/handler.py` - Request handler
-   - `src/model_loader.py` - Model loading logic
-   - `Dockerfile` - Container configuration
-3. Update the Makefile with new targets
-4. Add the new endpoint to the main Dockerfile if needed
-
-## Testing
-
-Run tests across all endpoints:
-```bash
-make test
-```
-
-## Code Quality
-
-Lint all endpoint code:
-```bash
-make lint
 ```
