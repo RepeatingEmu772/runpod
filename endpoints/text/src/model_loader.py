@@ -2,7 +2,6 @@ import os
 import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM, BitsAndBytesConfig, pipeline
 
-# Globals populated by load_models()
 model = None
 tokenizer = None
 pipe = None
@@ -14,15 +13,9 @@ def fetch_token():
     return token
 
 def load_models(env):
-    """
-    Loads the Mistral model/tokenizer and constructs a reusable text-generation pipeline.
-    On 'local', we intentionally avoid loading to speed local dev without GPU.
-    """
     global model, tokenizer, pipe
 
     if env == 'local':
-        # For local development we provide a lightweight, CPU-friendly fallback
-        # so the handler can run without requiring the full Mistral model or GPU.
         try:
             from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline
 
@@ -37,8 +30,6 @@ def load_models(env):
             )
             return
         except Exception:
-            # If the small model can't be loaded (no network), fall back to None so
-            # the handler will report an informative error.
             model = None
             tokenizer = None
             pipe = None
@@ -54,7 +45,6 @@ def load_models(env):
         bnb_4bit_use_double_quant=True,
     )
 
-    # Load tokenizer and model
     tokenizer = AutoTokenizer.from_pretrained(
         model_name,
         token=token
@@ -68,8 +58,6 @@ def load_models(env):
         token=token
     )
 
-    # Build the generation pipeline ONCE and reuse in the handler
-    # Note: For quantized models, dtype here is largely ignored for weights but fine for buffers
     global_pipe = pipeline(
         "text-generation",
         model=model,
@@ -78,5 +66,4 @@ def load_models(env):
         device_map="auto",
     )
 
-    # Assign to the module-level global
     pipe = global_pipe

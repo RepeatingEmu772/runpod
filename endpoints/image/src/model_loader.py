@@ -22,8 +22,7 @@ def _fetch_token() -> str:
 
 def load_models(env: str):
     """
-    Load FLUX.1-schnell pipelines (text->image, optional image->image) once at cold start.
-    On 'local' we skip loading to speed up dev.
+    Load FLUX.1-dev pipelines (text->image, optional image->image) once at cold start.
     """
     global pipe_t2i, pipe_i2i
 
@@ -33,7 +32,7 @@ def load_models(env: str):
         return
 
     token = _fetch_token()
-    model_id = "black-forest-labs/FLUX.1-schnell"
+    model_id = "black-forest-labs/FLUX.1-dev"
     dtype = torch.float16 if torch.cuda.is_available() else torch.float32
 
     pipe_t2i = FluxPipeline.from_pretrained(
