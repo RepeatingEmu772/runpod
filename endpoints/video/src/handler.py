@@ -15,16 +15,13 @@ def _bytes_to_b64(b: bytes) -> str:
 
 
 def _frames_to_mp4_bytes(frames, fps: int):
-    # frames are expected to be PIL.Image or numpy arrays
     tmp_dir = tempfile.mkdtemp(prefix="runpod_video_")
     out_path = os.path.join(tmp_dir, "out.mp4")
     clip = ImageSequenceClip([f for f in frames], fps=fps)
-    # moviepy writes to a file
     clip.write_videofile(out_path, codec="libx264", fps=fps, verbose=False, logger=None)
     with open(out_path, "rb") as fh:
         data = fh.read()
 
-    # cleanup
     try:
         os.remove(out_path)
         os.rmdir(tmp_dir)
@@ -77,10 +74,8 @@ def handler(job):
             generator=generator,
         )
     except TypeError:
-        # Fallback to a more generic call without type-specific args
         out = pipe_video(prompt=prompt)
 
-    # Try to extract video bytes
     video_bytes = None
     frames = None
 
@@ -103,7 +98,6 @@ def handler(job):
         frames = out.images
 
     if video_bytes is None and frames:
-        # Convert frames -> mp4 bytes
         mp4 = _frames_to_mp4_bytes(frames, fps)
         video_bytes = mp4
 
