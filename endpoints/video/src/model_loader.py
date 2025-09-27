@@ -25,7 +25,6 @@ def load_models(env: str):
 
     MODEL_ID = "Wan-AI/Wan2.2-TI2V-5B"
 
-    # Choose dtype based on CUDA availability
     dtype = torch.float16 if torch.cuda.is_available() else torch.float32
 
     try:
